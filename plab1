@@ -1,0 +1,219 @@
+# ============================================================
+# POST LAB TASK
+# Exploratory Data Analysis (EDA) on Titanic Dataset
+# ============================================================
+
+# Step 1: Import Required Libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+%matplotlib inline
+
+import warnings
+warnings.filterwarnings("ignore")
+
+# ------------------------------------------------------------
+# Step 2: Load Titanic Dataset
+# ------------------------------------------------------------
+df = sns.load_dataset('titanic')
+
+# Display first five rows
+print("First Five Rows:")
+display(df.head())
+
+# ------------------------------------------------------------
+# Step 3: Dataset Information
+# ------------------------------------------------------------
+print("\nDataset Information:")
+df.info()
+
+# ------------------------------------------------------------
+# Step 4: Dataset Shape
+# ------------------------------------------------------------
+print("\nShape of Dataset:")
+print(df.shape)
+
+# ------------------------------------------------------------
+# Step 5: Column Names
+# ------------------------------------------------------------
+print("\nColumn Names:")
+print(df.columns)
+
+# ------------------------------------------------------------
+# Step 6: Statistical Summary
+# ------------------------------------------------------------
+print("\nStatistical Summary:")
+display(df.describe())
+
+# ------------------------------------------------------------
+# Step 7: Check Missing Values
+# ------------------------------------------------------------
+print("\nMissing Values:")
+print(df.isnull().sum())
+
+# ------------------------------------------------------------
+# Step 8: Missing Value Percentage
+# ------------------------------------------------------------
+print("\nPercentage of Missing Values:")
+print((df.isnull().sum()/len(df))*100)
+
+# ------------------------------------------------------------
+# Step 9: Check Duplicate Rows
+# ------------------------------------------------------------
+print("\nDuplicate Rows:")
+print(df.duplicated().sum())
+
+# ------------------------------------------------------------
+# Step 10: Data Types
+# ------------------------------------------------------------
+print("\nData Types:")
+print(df.dtypes)
+
+# ============================================================
+# Univariate Analysis
+# ============================================================
+
+# Survival Count
+plt.figure(figsize=(6,4))
+sns.countplot(x='survived', data=df)
+plt.title("Survival Count")
+plt.show()
+
+# Passenger Class Distribution
+plt.figure(figsize=(6,4))
+sns.countplot(x='pclass', data=df)
+plt.title("Passenger Class Distribution")
+plt.show()
+
+# Gender Distribution
+plt.figure(figsize=(6,4))
+sns.countplot(x='sex', data=df)
+plt.title("Gender Distribution")
+plt.show()
+
+# Age Distribution
+plt.figure(figsize=(8,5))
+sns.histplot(df['age'], bins=30, kde=True)
+plt.title("Age Distribution")
+plt.show()
+
+# Fare Distribution
+plt.figure(figsize=(8,5))
+sns.histplot(df['fare'], bins=40, kde=True)
+plt.title("Fare Distribution")
+plt.show()
+
+# Age Boxplot
+plt.figure(figsize=(6,5))
+sns.boxplot(y=df['age'])
+plt.title("Age Boxplot")
+plt.show()
+
+# Fare Boxplot
+plt.figure(figsize=(6,5))
+sns.boxplot(y=df['fare'])
+plt.title("Fare Boxplot")
+plt.show()
+
+# ============================================================
+# Bivariate Analysis
+# ============================================================
+
+# Survival by Gender
+plt.figure(figsize=(6,4))
+sns.countplot(x='sex', hue='survived', data=df)
+plt.title("Survival by Gender")
+plt.show()
+
+# Survival by Passenger Class
+plt.figure(figsize=(6,4))
+sns.countplot(x='pclass', hue='survived', data=df)
+plt.title("Survival by Passenger Class")
+plt.show()
+
+# Age vs Fare
+plt.figure(figsize=(8,5))
+sns.scatterplot(x='age', y='fare', hue='survived', data=df)
+plt.title("Age vs Fare")
+plt.show()
+
+# ============================================================
+# Correlation Analysis
+# ============================================================
+
+numeric_df = df.select_dtypes(include=['number'])
+
+print("\nCorrelation Matrix:")
+display(numeric_df.corr())
+
+plt.figure(figsize=(10,8))
+sns.heatmap(numeric_df.corr(), annot=True, cmap='coolwarm', linewidths=0.5)
+plt.title("Correlation Heatmap")
+plt.show()
+
+# Pairplot
+sns.pairplot(df[['survived','age','fare','pclass']])
+plt.show()
+
+# ============================================================
+# Value Counts
+# ============================================================
+
+print("\nGender Count:")
+print(df['sex'].value_counts())
+
+print("\nPassenger Class Count:")
+print(df['pclass'].value_counts())
+
+print("\nSurvival Count:")
+print(df['survived'].value_counts())
+
+# ============================================================
+# Handling Missing Values
+# ============================================================
+
+df['age'].fillna(df['age'].median(), inplace=True)
+df['embarked'].fillna(df['embarked'].mode()[0], inplace=True)
+df['embark_town'].fillna(df['embark_town'].mode()[0], inplace=True)
+
+# Drop Deck column because it has many missing values
+df.drop(columns=['deck'], inplace=True)
+
+# ------------------------------------------------------------
+# Verify Missing Values
+# ------------------------------------------------------------
+print("\nMissing Values After Cleaning:")
+print(df.isnull().sum())
+
+# ------------------------------------------------------------
+# Final Dataset
+# ------------------------------------------------------------
+print("\nFirst Five Rows After Cleaning:")
+display(df.head())
+
+# ------------------------------------------------------------
+# Final Shape
+# ------------------------------------------------------------
+print("\nFinal Shape:")
+print(df.shape)
+
+# ============================================================
+# Conclusion
+# ============================================================
+
+print("\n========== EDA SUMMARY ==========")
+print("1. Dataset contains 891 rows and 15 columns.")
+print("2. Missing values were found in Age, Embarked, Embark Town, and Deck.")
+print("3. Missing values were handled using median and mode.")
+print("4. Deck column was removed because it contained too many missing values.")
+print("5. Most passengers belonged to Third Class.")
+print("6. Male passengers were more than female passengers.")
+print("7. Female passengers had a higher survival rate.")
+print("8. First Class passengers had better survival chances.")
+print("9. Fare contains several outliers.")
+print("10. Most passengers were between 20 and 40 years old.")
+print("11. Correlation analysis shows Fare is positively related to survival, while Passenger Class is negatively related to survival.")
+
+print("\nEDA Completed Successfully.")
